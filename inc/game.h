@@ -13,6 +13,7 @@
 
 typedef enum{
     START=0,
+    GAME_INIT,
     GAME_LOOP,
     GAMEOVER
 }State;
@@ -20,6 +21,7 @@ typedef enum{
 struct{
     State status;//TODO: Change to STart
     enemy enemies[MAX_ENEMIES];
+    char direction;
     sprite playerBullets[MAX_BULLETS];
     sprite enemiesBullets[MAX_BULLETS];
 }Game;
@@ -27,7 +29,6 @@ struct{
 void draw();
 void update();
 void init();
-
 
 #endif
 
