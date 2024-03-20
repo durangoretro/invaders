@@ -18,17 +18,26 @@ typedef enum{
     GAMEOVER
 }State;
 
+typedef struct{
+    sprite sprite;
+    byte visible;
+}Bullet;
+
 struct{
     State status;//TODO: Change to STart
     enemy enemies[MAX_ENEMIES];
     char direction;
-    sprite playerBullets[MAX_BULLETS];
-    sprite enemiesBullets[MAX_BULLETS];
+    Bullet playerBullets[MAX_BULLETS];
+    Bullet enemiesBullets[MAX_BULLETS];
 }Game;
 
 void draw();
 void update();
 void init();
+
+//Player Bullet Functions
+Bullet initPlayerBullet(byte x, byte y, byte width, byte height, void * resource);
+void updatePlayerBullet(Bullet * playerBullet);
 
 #endif
 

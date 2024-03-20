@@ -12,6 +12,7 @@
 #include "redSptr.h"
 #include "greenSptr.h"
 #include "yellowSptr.h"
+#include "bulletSptr.h"
 
 // Functions Prototype
 void startGame();
@@ -38,39 +39,42 @@ int main()
 void init()
 {
     Game.status = 0;
-    
+
     drawFullScreen(BLACK);
-   
 }
 
-//Update Function
+// Update Function
 void update()
 {
     switch (Game.status)
     {
     case 0: // TODO Start
-    case 1: //Game Init
+    case 1: // Game Init
         startGame();
         break;
     case 2: // TODO Game Loop
         updateEnemies();
-        //Enemy Direction
-        if(Game.direction==ENEMY_DOWN && Game.enemies[0].sprite.x>20){
-            Game.direction=ENEMY_LEFT;
+        // Enemy Direction
+        if (Game.direction == ENEMY_DOWN && Game.enemies[0].sprite.x > 20)
+        {
+            Game.direction = ENEMY_LEFT;
         }
-        if(Game.direction==ENEMY_DOWN && Game.enemies[0].sprite.x<=0){
-            Game.direction=ENEMY_RIGHT;
+        if (Game.direction == ENEMY_DOWN && Game.enemies[0].sprite.x <= 0)
+        {
+            Game.direction = ENEMY_RIGHT;
         }
-        if(Game.direction==ENEMY_LEFT && Game.enemies[0].sprite.x<=0){
-            Game.direction=ENEMY_DOWN;
+        if (Game.direction == ENEMY_LEFT && Game.enemies[0].sprite.x <= 0)
+        {
+            Game.direction = ENEMY_DOWN;
         }
-        if(Game.direction==ENEMY_RIGHT && Game.enemies[0].sprite.x>20){
-            Game.direction=ENEMY_DOWN;
+        if (Game.direction == ENEMY_RIGHT && Game.enemies[0].sprite.x > 20)
+        {
+            Game.direction = ENEMY_DOWN;
         }
-        //Input and Player move
-        player.action=checkInput();
+        // Input and Player move
+        player.action = checkInput();
         updatePlayer();
-    case 3: //Game Over
+    case 3: // Game Over
     default:
         break;
     }
@@ -81,20 +85,18 @@ void draw()
     switch (Game.status)
     {
     case 0: // TODO Start
-    case 1://TODO: GAME_INIT
-       drawEnemies();
-       drawPlayer(&player);
-       Game.status=2;//To Game Loop
-       break;
-      case 2:
+    case 1: // TODO: GAME_INIT
+        drawEnemies();
+        drawPlayer(&player);
+        Game.status = 2; // To Game Loop
+       
+        
+        break;
+    case 2:
         moveEnemies();
         movePlayer();
-       break;
-   // TODO Game Loop
-
-     
         break;
-    case 3: //TODO: Game Over
+    case 3: // TODO: Game Over
     default:
         break;
     }
@@ -102,58 +104,65 @@ void draw()
 
 void drawPlayer()
 {
-    unsigned char i;
     calculate_coords(&player.sprite);
     draw_sprite(&player.sprite);
-   
 }
 
-void initEnemy(enemy* output,unsigned char x, unsigned char y, unsigned char width, unsigned char height, void * resource){
-    output->lives=1;
-    output->sprite.x=x;
-    output->sprite.y=y;
-    output->sprite.width=width;
-    output->sprite.height=height;
-    output->sprite.resource=resource;
-    output->visible=VISIBLE;
+void initEnemy(enemy *output, unsigned char x, unsigned char y, unsigned char width, unsigned char height, void *resource)
+{
+    output->lives = 1;
+    output->sprite.x = x;
+    output->sprite.y = y;
+    output->sprite.width = width;
+    output->sprite.height = height;
+    output->sprite.resource = resource;
+    output->visible = VISIBLE;
 }
 
-void startGame(){
+void startGame()
+{
     unsigned char i;
-    //init Player
+    // init Player
     player.lives = 3;
     player.sprite.resource = &playerSptr_0_0;
-    player.sprite.width = 32;
     player.sprite.width = 16;
+    player.sprite.height = 8;
     player.sprite.x = 56;
     player.sprite.y = 115;
-    //red 1
-    for(i=0;i<8;i++){
-        initEnemy(&Game.enemies[i],5+(i*14),30,10,8,&redSptr_0_0);
+    // red 1
+    for (i = 0; i < 8; i++)
+    {
+        initEnemy(&Game.enemies[i], 5 + (i * 14), 30, 10, 8, &redSptr_0_0);
     }
-    //green
-    for(i=8;i<16;i++){
-        initEnemy(&Game.enemies[i],5+((i-8)*14),17,10,8,&greenSptr_0_0);
+    // green
+    for (i = 8; i < 16; i++)
+    {
+        initEnemy(&Game.enemies[i], 5 + ((i - 8) * 14), 17, 10, 8, &greenSptr_0_0);
     }
-    //yellow
-    for(i=16;i<24;i++){
-        initEnemy(&Game.enemies[i],5+((i-16)*14),2,10,8,&yellowSptr_0_0);
+    // yellow
+    for (i = 16; i < 24; i++)
+    {
+        initEnemy(&Game.enemies[i], 5 + ((i - 16) * 14), 2, 10, 8, &yellowSptr_0_0);
     }
-    //Second Red
-     for(i=24;i<32;i++){
-        initEnemy(&Game.enemies[i],5+((i-24)*14), 42,10,8,&redSptr_0_0);
+    // Second Red
+    for (i = 24; i < 32; i++)
+    {
+        initEnemy(&Game.enemies[i], 5 + ((i - 24) * 14), 42, 10, 8, &redSptr_0_0);
     }
-    Game.direction=ENEMY_RIGHT;
+    Game.direction = ENEMY_RIGHT;
 }
 
-void updateEnemies(){
+void updateEnemies()
+{
     unsigned char i;
-    for(i=0;i<MAX_ENEMIES;i++){
+    for (i = 0; i < MAX_ENEMIES; i++)
+    {
         updateEnemy(&Game.enemies[i]);
     }
 }
 
-void updateEnemy(enemy * enem){
+void updateEnemy(enemy *enem)
+{
     switch (Game.direction)
     {
     case ENEMY_RIGHT:
@@ -170,7 +179,8 @@ void updateEnemy(enemy * enem){
     }
 }
 
-void updatePlayer(){
+void updatePlayer()
+{
     switch (player.action)
     {
     case ACTION_RIGHT:
@@ -184,35 +194,52 @@ void updatePlayer(){
     }
 }
 
-unsigned char checkInput(){
-    unsigned char action= ACTION_NONE;
-    unsigned char value=readGamepad(GAMEPAD_1);
+unsigned char checkInput()
+{
+    unsigned char action;
+    unsigned char value = readGamepad(GAMEPAD_1);
 
-    if((value & BUTTON_RIGHT) || readKeyboard(ROW_KEY_P) & KEY_P){
-        //Move player right
+    if ((value & BUTTON_RIGHT) || readKeyboard(ROW_KEY_P) & KEY_P)
+    {
+        // Move player right
         action = ACTION_RIGHT;
     }
-    
-    if(value & BUTTON_LEFT || readKeyboard(ROW_KEY_Q) & KEY_Q){
-        //Move player left
-        action = ACTION_LEFT;
-    }
+    else
+    {
 
-    if(value & BUTTON_A || readKeyboard(ROW_KEY_SPACE) & KEY_SPACE){
-        //Fire
-        action = ACTION_FIRE;
-    }
+        if (value & BUTTON_LEFT || readKeyboard(ROW_KEY_Q) & KEY_Q)
+        {
+            // Move player left
+            action = ACTION_LEFT;
+        }
+        else
+        {
 
+            if (value & BUTTON_A || readKeyboard(ROW_KEY_SPACE) & KEY_SPACE)
+            {
+                // Fire
+                action = ACTION_FIRE;
+            }
+            else
+            {
+                action = ACTION_NONE;
+            }
+        }
+    }
+    return action;
 }
 
-void moveEnemies(){
+void moveEnemies()
+{
     unsigned char i;
-    for(i=0;i<MAX_ENEMIES;i++){
-       moveEnemy(&Game.enemies[i]);
+    for (i = 0; i < MAX_ENEMIES; i++)
+    {
+        moveEnemy(&Game.enemies[i]);
     }
 }
 
-void moveEnemy(enemy* enem){
+void moveEnemy(enemy *enem)
+{
     switch (Game.direction)
     {
     case ENEMY_RIGHT:
@@ -229,20 +256,25 @@ void moveEnemy(enemy* enem){
     }
 }
 
-void drawEnemies(){
+void drawEnemies()
+{
     unsigned char i;
-     for(i=0;i<MAX_ENEMIES;i++){
-       if(Game.enemies[i].visible==VISIBLE){
-         draw_sprite(&Game.enemies[i]);
-       }
+    for (i = 0; i < MAX_ENEMIES; i++)
+    {
+        if (Game.enemies[i].visible == VISIBLE)
+        {
+            draw_sprite(&Game.enemies[i]);
+        }
     }
 }
 
-void drawEnemy(enemy * enem){
+void drawEnemy(enemy *enem)
+{
     draw_sprite(&enem->sprite);
 }
 
-void movePlayer(){
+void movePlayer()
+{
     switch (player.action)
     {
     case ACTION_RIGHT:
