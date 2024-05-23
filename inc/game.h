@@ -28,7 +28,9 @@ struct{
     enemy enemies[MAX_ENEMIES];
     char direction;
     Bullet playerBullets[MAX_BULLETS];
+    int currentBullet;
     Bullet enemiesBullets[MAX_BULLETS];
+    int currentEnemyBullet;
 }Game;
 
 void draw();
@@ -36,8 +38,7 @@ void update();
 void init();
 
 //Player Bullet Functions
-Bullet initPlayerBullet(byte x, byte y, byte width, byte height, void * resource);
-void updatePlayerBullet(Bullet * playerBullet);
+void initPlayerBullet(Bullet* output, byte x, byte y, byte width, byte height, void * resource);
 
 #endif
 

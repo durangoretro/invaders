@@ -22,6 +22,11 @@ void drawEnemies();
 
 void moveEnemies();
 
+
+void firePlayerBullet();
+void drawPlayerBullet();
+void movePlayerBullets();
+
 int main()
 {
     init();
@@ -74,9 +79,22 @@ void update()
         // Input and Player move
         player.action = checkInput();
         updatePlayer();
+        updatePlayerBullets();
     case 3: // Game Over
     default:
         break;
+    }
+}
+
+void updatePlayerBullets(){
+    unsigned char i;
+    for(i=0;i<MAX_BULLETS;i++){
+        if(Game.playerBullets[i].visible==VISIBLE){
+            Game.playerBullets[i].sprite.y--;
+        }
+        if(Game.playerBullets[i].sprite.y<0){
+            Game.playerBullets[i].visible=NOT_VISIBLE;
+        }
     }
 }
 
@@ -95,6 +113,8 @@ void draw()
     case 2:
         moveEnemies();
         movePlayer();
+        drawPlayerBullet();
+        movePlayerBullets();
         break;
     case 3: // TODO: Game Over
     default:
@@ -108,6 +128,7 @@ void drawPlayer()
     draw_sprite(&player.sprite);
 }
 
+
 void initEnemy(enemy *output, unsigned char x, unsigned char y, unsigned char width, unsigned char height, void *resource)
 {
     output->lives = 1;
@@ -117,6 +138,16 @@ void initEnemy(enemy *output, unsigned char x, unsigned char y, unsigned char wi
     output->sprite.height = height;
     output->sprite.resource = resource;
     output->visible = VISIBLE;
+}
+
+void  initPlayerBullet(Bullet * output,byte x, byte y, byte width, byte height, void * resource){
+   
+    output->visible=NOT_VISIBLE;
+    output->sprite.x=x;
+    output->sprite.y=y;
+    output->sprite.width=width;
+    output->sprite.height=height;
+    output->sprite.resource=resource;
 }
 
 void startGame()
@@ -129,6 +160,9 @@ void startGame()
     player.sprite.height = 8;
     player.sprite.x = 56;
     player.sprite.y = 115;
+    //Init game Bullets
+    Game.currentBullet=0;
+    Game.currentEnemyBullet=0;
     // red 1
     for (i = 0; i < 8; i++)
     {
@@ -189,9 +223,19 @@ void updatePlayer()
     case ACTION_LEFT:
         player.sprite.x--;
         break;
+    case ACTION_FIRE:
+        firePlayerBullet();
+        break;
     default:
         break;
     }
+}
+
+void firePlayerBullet(){
+    Bullet bullet;
+    bullet = Game.playerBullets[Game.currentBullet];
+    initPlayerBullet(&bullet,player.sprite.x+8, player.sprite.y-20,
+    8,10,&bulletSptr_0_0);
 }
 
 unsigned char checkInput()
@@ -263,8 +307,16 @@ void drawEnemies()
     {
         if (Game.enemies[i].visible == VISIBLE)
         {
-            draw_sprite(&Game.enemies[i]);
+            draw_sprite(&Game.enemies[i].sprite);
         }
+    }
+}
+
+void drawPlayerBullet(){
+    if(player.action==ACTION_FIRE){
+       draw_sprite(&Game.playerBullets[Game.currentBullet].sprite);
+        Game.playerBullets[Game.currentBullet].visible=VISIBLE;
+        Game.currentBullet=Game.currentBullet++ % MAX_BULLETS;
     }
 }
 
@@ -283,7 +335,17 @@ void movePlayer()
     case ACTION_LEFT:
         move_sprite_left(&player.sprite);
         break;
+
     default:
         break;
+    }
+}
+
+void movePlayerBullets(){
+    unsigned char i;
+    for(i=0;i<MAX_BULLETS;i++){
+        if(Game.playerBullets[i].visible==VISIBLE){
+            move_sprite_up(&Game.playerBullets[i].sprite);
+        }
     }
 }
