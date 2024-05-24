@@ -22,7 +22,6 @@ void drawEnemies();
 
 void moveEnemies();
 
-
 void firePlayerBullet();
 void drawPlayerBullet();
 void movePlayerBullets();
@@ -86,14 +85,14 @@ void update()
     }
 }
 
-void updatePlayerBullets(){
+void updatePlayerBullets()
+{
     unsigned char i;
-    for(i=0;i<MAX_BULLETS;i++){
-        if(Game.playerBullets[i].visible==VISIBLE){
-            Game.playerBullets[i].sprite.y--;
-        }
-        if(Game.playerBullets[i].sprite.y<0){
-            Game.playerBullets[i].visible=NOT_VISIBLE;
+    for (i = 0; i < MAX_BULLETS; i++)
+    {
+        if (Game.playerBullets[i].visible == VISIBLE)
+        {
+            Game.playerBullets[i].sprite.y-=4;
         }
     }
 }
@@ -107,8 +106,7 @@ void draw()
         drawEnemies();
         drawPlayer(&player);
         Game.status = 2; // To Game Loop
-       
-        
+
         break;
     case 2:
         moveEnemies();
@@ -128,7 +126,6 @@ void drawPlayer()
     draw_sprite(&player.sprite);
 }
 
-
 void initEnemy(enemy *output, unsigned char x, unsigned char y, unsigned char width, unsigned char height, void *resource)
 {
     output->lives = 1;
@@ -140,14 +137,15 @@ void initEnemy(enemy *output, unsigned char x, unsigned char y, unsigned char wi
     output->visible = VISIBLE;
 }
 
-void  initPlayerBullet(Bullet * output,byte x, byte y, byte width, byte height, void * resource){
-   
-    output->visible=NOT_VISIBLE;
-    output->sprite.x=x;
-    output->sprite.y=y;
-    output->sprite.width=width;
-    output->sprite.height=height;
-    output->sprite.resource=resource;
+void initPlayerBullet(Bullet *output, byte x, byte y, byte width, byte height, void *resource)
+{
+
+    output->visible = NOT_VISIBLE;
+    output->sprite.x = x;
+    output->sprite.y = y;
+    output->sprite.width = width;
+    output->sprite.height = height;
+    output->sprite.resource = resource;
 }
 
 void startGame()
@@ -160,9 +158,9 @@ void startGame()
     player.sprite.height = 8;
     player.sprite.x = 56;
     player.sprite.y = 115;
-    //Init game Bullets
-    Game.currentBullet=0;
-    Game.currentEnemyBullet=0;
+    // Init game Bullets
+    Game.currentBullet = 0;
+    Game.currentEnemyBullet = 0;
     // red 1
     for (i = 0; i < 8; i++)
     {
@@ -231,11 +229,13 @@ void updatePlayer()
     }
 }
 
-void firePlayerBullet(){
+void firePlayerBullet()
+{
     Bullet bullet;
     bullet = Game.playerBullets[Game.currentBullet];
-    initPlayerBullet(&bullet,player.sprite.x+8, player.sprite.y-20,
-    8,10,&bulletSptr_0_0);
+    initPlayerBullet(&bullet, player.sprite.x+4, player.sprite.y - 8,
+                     10, 8, &bulletSptr_0_0);
+    Game.playerBullets[Game.currentBullet] = bullet;
 }
 
 unsigned char checkInput()
@@ -266,6 +266,7 @@ unsigned char checkInput()
             }
             else
             {
+                // Do Nothing
                 action = ACTION_NONE;
             }
         }
@@ -312,17 +313,14 @@ void drawEnemies()
     }
 }
 
-void drawPlayerBullet(){
-    if(player.action==ACTION_FIRE){
-       draw_sprite(&Game.playerBullets[Game.currentBullet].sprite);
-        Game.playerBullets[Game.currentBullet].visible=VISIBLE;
-        Game.currentBullet=Game.currentBullet++ % MAX_BULLETS;
-    }
-}
-
-void drawEnemy(enemy *enem)
+void drawPlayerBullet()
 {
-    draw_sprite(&enem->sprite);
+    if (player.action == ACTION_FIRE)
+    {
+        draw_sprite(&Game.playerBullets[Game.currentBullet].sprite);
+        Game.playerBullets[Game.currentBullet].visible = VISIBLE;
+        Game.currentBullet = Game.currentBullet++ % MAX_BULLETS;
+    }
 }
 
 void movePlayer()
@@ -341,10 +339,24 @@ void movePlayer()
     }
 }
 
-void movePlayerBullets(){
+void movePlayerBullets()
+{
     unsigned char i;
-    for(i=0;i<MAX_BULLETS;i++){
-        if(Game.playerBullets[i].visible==VISIBLE){
+    for (i = 0; i < MAX_BULLETS; i++)
+    {
+        if (Game.playerBullets[i].visible == VISIBLE)
+        {
+            // Delete Sprite if reach end of screen
+            if (&Game.playerBullets[i].sprite.y <= 8)
+            {
+                clean_sprite(&Game.playerBullets[i].sprite);
+                Game.playerBullets[i].visible = NOT_VISIBLE;
+            }
+            
+            move_sprite_up(&Game.playerBullets[i].sprite);
+            move_sprite_up(&Game.playerBullets[i].sprite);
+            move_sprite_up(&Game.playerBullets[i].sprite);
+            move_sprite_up(&Game.playerBullets[i].sprite);
             move_sprite_up(&Game.playerBullets[i].sprite);
         }
     }
