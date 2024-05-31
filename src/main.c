@@ -5,6 +5,7 @@
 // Include Library
 #include <durango.h>
 
+
 #include "game.h"
 
 // Resources
@@ -13,6 +14,7 @@
 #include "greenSptr.h"
 #include "yellowSptr.h"
 #include "bulletSptr.h"
+
 
 // Functions Prototype
 void startGame();
@@ -122,7 +124,6 @@ void draw()
 
 void drawPlayer()
 {
-    calculate_coords(&player.sprite);
     draw_sprite(&player.sprite);
 }
 
@@ -231,11 +232,10 @@ void updatePlayer()
 
 void firePlayerBullet()
 {
-    Bullet bullet;
-    bullet = Game.playerBullets[Game.currentBullet];
-    initPlayerBullet(&bullet, player.sprite.x+4, player.sprite.y - 8,
-                     10, 8, &bulletSptr_0_0);
-    Game.playerBullets[Game.currentBullet] = bullet;
+    Bullet *bullet;
+    bullet = &Game.playerBullets[Game.currentBullet];
+    initPlayerBullet(bullet, player.sprite.x+4, player.sprite.y - 8,
+                     8, 10, &bulletSptr_0_0);
 }
 
 unsigned char checkInput()
@@ -347,7 +347,7 @@ void movePlayerBullets()
         if (Game.playerBullets[i].visible == VISIBLE)
         {
             // Delete Sprite if reach end of screen
-            if (&Game.playerBullets[i].sprite.y <= 8)
+            if (Game.playerBullets[i].sprite.y <= 8)
             {
                 clean_sprite(&Game.playerBullets[i].sprite);
                 Game.playerBullets[i].visible = NOT_VISIBLE;
