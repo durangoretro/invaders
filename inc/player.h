@@ -7,6 +7,7 @@
 #define ACTION_RIGHT 1
 #define ACTION_LEFT 2
 #define ACTION_FIRE 3
+#define ACTION_NEXT 4 //Next Status (press Start on init or on game Over)
 #define ACTION_NONE 0
 struct{
     sprite sprite;

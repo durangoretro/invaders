@@ -11,12 +11,13 @@
 #define MAX_ENEMIES 32
 #define MAX_BULLETS 20
 
-typedef enum{
+typedef enum state{
     START=0,
     GAME_INIT,
     GAME_LOOP,
+    GAME_RESTART,
     GAMEOVER
-}State;
+} Status;
 
 typedef struct{
     sprite sprite;
@@ -24,7 +25,7 @@ typedef struct{
 }Bullet;
 
 struct{
-    State status;//TODO: Change to STart
+    Status status;//TODO: Change to STart
     enemy enemies[MAX_ENEMIES];
     char direction;
     Bullet playerBullets[MAX_BULLETS];

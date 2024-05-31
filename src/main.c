@@ -5,7 +5,6 @@
 // Include Library
 #include <durango.h>
 
-
 #include "game.h"
 
 // Resources
@@ -15,7 +14,6 @@
 #include "yellowSptr.h"
 #include "bulletSptr.h"
 
-
 // Functions Prototype
 void startGame();
 void updateEnemies();
@@ -24,9 +22,20 @@ void drawEnemies();
 
 void moveEnemies();
 
+unsigned char checkInputStart();
+unsigned char checkInputGame();
+unsigned char checkInputGameOver();
+
+void restartEnemies();
+void restartPlayer();
+void restartBullets();
+void restartEnemy(enemy *output, unsigned char x, unsigned char y, unsigned char visible);
+
 void firePlayerBullet();
 void drawPlayerBullet();
 void movePlayerBullets();
+
+void cleanEnemies();
 void checkCols();
 
 int main()
@@ -45,7 +54,7 @@ int main()
 
 void init()
 {
-    Game.status = 0;
+    Game.status = START;
 
     drawFullScreen(BLACK);
 }
@@ -55,11 +64,11 @@ void update()
 {
     switch (Game.status)
     {
-    case 0: // TODO Start
-    case 1: // Game Init
+    case START:     // TODO Start
+    case GAME_INIT: // Game Init
         startGame();
         break;
-    case 2: // TODO Game Loop
+    case GAME_LOOP: // TODO Game Loop
         updateEnemies();
         // Enemy Direction
         if (Game.direction == ENEMY_DOWN && Game.enemies[0].sprite.x > 20)
@@ -83,12 +92,79 @@ void update()
         updatePlayer();
         updatePlayerBullets();
         checkCols();
-    case 3: // Game Over
+        break;
+    case GAME_RESTART:
+        restartEnemies();
+        restartPlayer();
+        restartBullets();
+        break;
+    case GAMEOVER: // Game Over
     default:
         break;
     }
 }
 
+void restartEnemy(enemy *output, unsigned char x, unsigned char y, unsigned char visible)
+{
+    output->sprite.x = x;
+    output->sprite.y = y;
+    output->visible = visible;
+}
+
+void restartEnemies()
+{
+    unsigned char i;
+    for (i = 0; i < 8; i++)
+    {
+        if (Game.enemies[i].visible == VISIBLE)
+        {
+            restartEnemy(&Game.enemies[i], 5 + (i * 14), 30, Game.enemies[i].visible);
+        }
+    }
+    // green
+    for (i = 8; i < 16; i++)
+    {
+        if (Game.enemies[i].visible == VISIBLE)
+        {
+            restartEnemy(&Game.enemies[i], 5 + ((i - 8) * 14), 17, Game.enemies[i].visible);
+        }
+    }
+    // yellow
+    for (i = 16; i < 24; i++)
+    {
+        if (Game.enemies[i].visible == VISIBLE)
+        {
+            restartEnemy(&Game.enemies[i], 5 + ((i - 16) * 14), 2, Game.enemies[i].visible);
+        }
+    }
+    // Second Red
+    for (i = 24; i < 32; i++)
+    {
+        if (Game.enemies[i].visible == VISIBLE)
+        {
+            restartEnemy(&Game.enemies[i], 5 + ((i - 24) * 14), 42, Game.enemies[i].visible);
+        }
+    }
+    Game.direction = ENEMY_RIGHT;
+}
+
+void restartPlayer()
+{
+    player.sprite.x = 56;
+    player.sprite.y = 115;
+}
+
+void restartBullets()
+{
+    unsigned char i;
+    for (i = 0; i < MAX_BULLETS; i++)
+    {
+        Game.playerBullets[i].visible = NOT_VISIBLE;
+        Game.enemiesBullets[i].visible = NOT_VISIBLE;
+    }
+    Game.currentBullet = 0;
+    Game.currentEnemyBullet = 0;
+}
 void updatePlayerBullets()
 {
     unsigned char i;
@@ -96,7 +172,7 @@ void updatePlayerBullets()
     {
         if (Game.playerBullets[i].visible == VISIBLE)
         {
-            Game.playerBullets[i].sprite.y-=4;
+            Game.playerBullets[i].sprite.y -= 4;
         }
     }
 }
@@ -105,22 +181,42 @@ void draw()
 {
     switch (Game.status)
     {
-    case 0: // TODO Start
-    case 1: // TODO: GAME_INIT
+    case START:     // TODO Start
+    case GAME_INIT: // TODO: GAME_INIT
         drawEnemies();
         drawPlayer(&player);
         Game.status = 2; // To Game Loop
 
         break;
-    case 2:
+    case GAME_LOOP:
         moveEnemies();
         movePlayer();
         drawPlayerBullet();
         movePlayerBullets();
         break;
-    case 3: // TODO: Game Over
+    case GAME_RESTART:
+        drawFullScreen(BLACK);
+        cleanEnemies();
+        drawEnemies();
+        drawPlayer(&player);
+
+        Game.status = GAME_LOOP;
+        break;
+    case GAMEOVER: // TODO: Game Over
     default:
         break;
+    }
+}
+
+void cleanEnemies()
+{
+    unsigned char i;
+    for (i = 0; i < MAX_ENEMIES; i++)
+    {
+        if (Game.enemies[i].visible == VISIBLE)
+        {
+            clean_sprite(&Game.enemies[i].sprite);
+        }
     }
 }
 
@@ -236,11 +332,44 @@ void firePlayerBullet()
 {
     Bullet *bullet;
     bullet = &Game.playerBullets[Game.currentBullet];
-    initPlayerBullet(bullet, player.sprite.x+4, player.sprite.y - 8,
+    initPlayerBullet(bullet, player.sprite.x + 4, player.sprite.y - 8,
                      8, 10, &bulletSptr_0_0);
 }
 
 unsigned char checkInput()
+{
+    switch (Game.status)
+    {
+    case START:
+        return checkInputStart();
+    case GAME_INIT:
+    case GAME_LOOP:
+        return checkInputGame();
+    case GAMEOVER:
+        return checkInputGameOver();
+    default:
+        break;
+    }
+}
+
+unsigned char checkInputStart()
+{
+    unsigned char action;
+    unsigned char value = readGamepad(GAMEPAD_1);
+    action = ACTION_NONE;
+    if (value & BUTTON_START || readKeyboard(ROW_KEY_INTRO) & KEY_INTRO)
+    {
+        action = ACTION_NEXT;
+    }
+    return action;
+}
+
+unsigned char checkInputGameOver()
+{
+    // TODO check Start Button
+    return ACTION_NONE;
+}
+unsigned char checkInputGame()
 {
     unsigned char action;
     unsigned char value = readGamepad(GAMEPAD_1);
@@ -281,7 +410,8 @@ void moveEnemies()
     unsigned char i;
     for (i = 0; i < MAX_ENEMIES; i++)
     {
-        if (Game.enemies[i].visible == VISIBLE){
+        if (Game.enemies[i].visible == VISIBLE)
+        {
             moveEnemy(&Game.enemies[i]);
         }
     }
@@ -356,7 +486,7 @@ void movePlayerBullets()
                 clean_sprite(&Game.playerBullets[i].sprite);
                 Game.playerBullets[i].visible = NOT_VISIBLE;
             }
-            
+
             move_sprite_up(&Game.playerBullets[i].sprite);
             move_sprite_up(&Game.playerBullets[i].sprite);
             move_sprite_up(&Game.playerBullets[i].sprite);
@@ -366,8 +496,10 @@ void movePlayerBullets()
     }
 }
 
-void checkCols() {
+void checkCols()
+{
     unsigned char i, j;
+    // check Player Bullets
     for (i = 0; i < MAX_BULLETS; i++)
     {
         if (Game.playerBullets[i].visible == VISIBLE)
@@ -376,13 +508,33 @@ void checkCols() {
             {
                 if (Game.enemies[j].visible == VISIBLE)
                 {
-                    if(check_collisions(&Game.playerBullets[i].sprite, &Game.enemies[j].sprite))
+                    if (check_collisions(&Game.playerBullets[i].sprite, &Game.enemies[j].sprite))
                     {
                         Game.playerBullets[i].visible = NOT_VISIBLE;
                         Game.enemies[j].visible = NOT_VISIBLE;
                         clean_sprite(&Game.playerBullets[i].sprite);
                         clean_sprite(&Game.enemies[j].sprite);
                     }
+                }
+            }
+        }
+    }
+    // check enemy - Player collision
+
+    for (i = 0; i < MAX_ENEMIES; i++)
+    {
+        if (Game.enemies[i].visible == VISIBLE)
+        {
+            if (check_collisions(&Game.enemies[i].sprite, &player.sprite))
+            {
+                player.lives--;
+                if (player.lives != 0)
+                {
+                    Game.status = GAME_RESTART;
+                }
+                else
+                {
+                    Game.status = GAMEOVER;
                 }
             }
         }
