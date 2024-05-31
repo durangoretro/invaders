@@ -27,6 +27,7 @@ void moveEnemies();
 void firePlayerBullet();
 void drawPlayerBullet();
 void movePlayerBullets();
+void checkCols();
 
 int main()
 {
@@ -81,6 +82,7 @@ void update()
         player.action = checkInput();
         updatePlayer();
         updatePlayerBullets();
+        checkCols();
     case 3: // Game Over
     default:
         break;
@@ -279,7 +281,9 @@ void moveEnemies()
     unsigned char i;
     for (i = 0; i < MAX_ENEMIES; i++)
     {
-        moveEnemy(&Game.enemies[i]);
+        if (Game.enemies[i].visible == VISIBLE){
+            moveEnemy(&Game.enemies[i]);
+        }
     }
 }
 
@@ -358,6 +362,29 @@ void movePlayerBullets()
             move_sprite_up(&Game.playerBullets[i].sprite);
             move_sprite_up(&Game.playerBullets[i].sprite);
             move_sprite_up(&Game.playerBullets[i].sprite);
+        }
+    }
+}
+
+void checkCols() {
+    unsigned char i, j;
+    for (i = 0; i < MAX_BULLETS; i++)
+    {
+        if (Game.playerBullets[i].visible == VISIBLE)
+        {
+            for (j = 0; j < MAX_ENEMIES; j++)
+            {
+                if (Game.enemies[j].visible == VISIBLE)
+                {
+                    if(check_collisions(&Game.playerBullets[i].sprite, &Game.enemies[j].sprite))
+                    {
+                        Game.playerBullets[i].visible = NOT_VISIBLE;
+                        Game.enemies[j].visible = NOT_VISIBLE;
+                        clean_sprite(&Game.playerBullets[i].sprite);
+                        clean_sprite(&Game.enemies[j].sprite);
+                    }
+                }
+            }
         }
     }
 }
