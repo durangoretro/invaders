@@ -237,7 +237,7 @@ void firePlayerBullet()
     Bullet *bullet;
     bullet = &Game.playerBullets[Game.currentBullet];
     initPlayerBullet(bullet, player.sprite.x+4, player.sprite.y - 8,
-                     8, 10, &bulletSptr_0_0);
+                     2, 6, &bulletSptr_0_0);
 }
 
 unsigned char checkInput()
