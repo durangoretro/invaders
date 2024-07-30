@@ -1,12 +1,12 @@
 BUILD_DIR=bin
 SOURCE_DIR=src
 RES_DIR=res
-DDK?=../DurangoLib
+DDK?=../../
 COMPILER_OPT= -I $(DDK)/inc -I inc -I res --cpu 6502
 ASM_OPT = -t none
 LINKER_OPT= -C $(DDK)/cfg/durango.cfg
 LINKER_LIBS=  $(DDK)/bin/durango.lib
-RESCOMP?=../rescomp/target/rescomp.jar
+RESCOMP?=$(DDK)/rescomp/rescomp.jar
 
 all: rom.dux
 
