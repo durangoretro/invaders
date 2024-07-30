@@ -1,12 +1,12 @@
 BUILD_DIR=bin
 SOURCE_DIR=src
 RES_DIR=res
-DDK?=../../
+DDK?=../DurangoLib
 COMPILER_OPT= -I $(DDK)/inc -I inc -I res --cpu 6502
 ASM_OPT = -t none
 LINKER_OPT= -C $(DDK)/cfg/durango.cfg
 LINKER_LIBS=  $(DDK)/bin/durango.lib
-RESCOMP?=$(DDK)/rescomp/rescomp.jar
+RESCOMP?=../rescomp/target/rescomp.jar
 
 all: rom.dux
 
@@ -19,7 +19,7 @@ $(RES_DIR)/greenSptr.h: $(RES_DIR)/green.png
 $(RES_DIR)/yellowSptr.h: $(RES_DIR)/yellow.png
 	java -jar ${RESCOMP} -n yellowSptr -m SPRITESHEET -w 10 -h 8 -i $(RES_DIR)/yellow.png -o $(RES_DIR)/yellowSptr.h  
 $(RES_DIR)/bulletSptr.h: $(RES_DIR)/bullet.png
-	java -jar ${RESCOMP} -n bulletSptr -m SPRITESHEET -w 8 -h 10 -i $(RES_DIR)/bullet.png -o $(RES_DIR)/bulletSptr.h  
+	java -jar ${RESCOMP} -n bulletSptr -m SPRITESHEET -w 2 -h 6 -i $(RES_DIR)/bullet.png -o $(RES_DIR)/bulletSptr.h  
 $(BUILD_DIR)/invaders.s: $(RES_DIR)/playerSptr.h $(RES_DIR)/bulletSptr.h $(RES_DIR)/redSptr.h $(RES_DIR)/greenSptr.h $(RES_DIR)/yellowSptr.h $(SOURCE_DIR)/main.c
 	cc65 $(COMPILER_OPT) -o $(BUILD_DIR)/invaders.s $(SOURCE_DIR)/main.c 
 $(BUILD_DIR)/invaders.o: $(BUILD_DIR)/invaders.s
