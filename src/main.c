@@ -59,23 +59,7 @@ void update()
         break;
     case 2: // TODO Game Loop
         updateEnemies();
-        // Enemy Direction
-        if (Game.direction == ENEMY_DOWN && Game.enemies[0].sprite.x > 20)
-        {
-            Game.direction = ENEMY_LEFT;
-        }
-        if (Game.direction == ENEMY_DOWN && Game.enemies[0].sprite.x <= 0)
-        {
-            Game.direction = ENEMY_RIGHT;
-        }
-        if (Game.direction == ENEMY_LEFT && Game.enemies[0].sprite.x <= 0)
-        {
-            Game.direction = ENEMY_DOWN;
-        }
-        if (Game.direction == ENEMY_RIGHT && Game.enemies[0].sprite.x > 20)
-        {
-            Game.direction = ENEMY_DOWN;
-        }
+       
         // Input and Player move
         player.action = checkInput();
         updatePlayer();
@@ -187,35 +171,23 @@ void startGame()
 
 void updateEnemies()
 {
-    // Change enemy Direction
-    switch (Game.direction)
-    {
-    case ENEMY_RIGHT:
-        if (Game.enemies[7].sprite.x > 118)
-        {
-            Game.direction = ENEMY_DOWN;
-        }
-        break;
-    case ENEMY_LEFT:
-        if (Game.enemies[0].sprite.x < 2)
-        {
-            Game.direction = ENEMY_DOWN;
-        }
-        break;
-    case ENEMY_DOWN:
-        if (Game.enemies[0].sprite.x < 2)
-        {
-            Game.direction = ENEMY_RIGHT;
-        }
-        else
+     // Enemy Direction
+        if (Game.direction == ENEMY_DOWN && Game.enemies[0].sprite.x > 20)
         {
             Game.direction = ENEMY_LEFT;
         }
-        break;
-    
-    default:
-        break;
-    }
+        if (Game.direction == ENEMY_DOWN && Game.enemies[0].sprite.x <= 2)
+        {
+            Game.direction = ENEMY_RIGHT;
+        }
+        if (Game.direction == ENEMY_LEFT && Game.enemies[0].sprite.x <= 2)
+        {
+            Game.direction = ENEMY_DOWN;
+        }
+        if (Game.direction == ENEMY_RIGHT && Game.enemies[0].sprite.x > 20)
+        {
+            Game.direction = ENEMY_DOWN;
+        }
 }
 
 void updatePlayer()
