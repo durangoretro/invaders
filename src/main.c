@@ -5,7 +5,6 @@
 // Include Library
 #include <durango.h>
 
-
 #include "game.h"
 
 // Resources
@@ -14,7 +13,6 @@
 #include "greenSptr.h"
 #include "yellowSptr.h"
 #include "bulletSptr.h"
-
 
 // Functions Prototype
 void startGame();
@@ -96,7 +94,7 @@ void updatePlayerBullets()
     {
         if (Game.playerBullets[i].visible == VISIBLE)
         {
-            Game.playerBullets[i].sprite.y-=4;
+            Game.playerBullets[i].sprite.y -= 4;
         }
     }
 }
@@ -189,26 +187,32 @@ void startGame()
 
 void updateEnemies()
 {
-    unsigned char i;
-    for (i = 0; i < MAX_ENEMIES; i++)
-    {
-        updateEnemy(&Game.enemies[i]);
-    }
-}
-
-void updateEnemy(enemy *enem)
-{
+    // Change enemy Direction
     switch (Game.direction)
     {
     case ENEMY_RIGHT:
-        enem->sprite.x++;
+        if (Game.enemies[7].sprite.x > 118)
+        {
+            Game.direction = ENEMY_DOWN;
+        }
         break;
     case ENEMY_LEFT:
-        enem->sprite.x--;
+        if (Game.enemies[0].sprite.x < 2)
+        {
+            Game.direction = ENEMY_DOWN;
+        }
         break;
     case ENEMY_DOWN:
-        enem->sprite.y++;
+        if (Game.enemies[0].sprite.x < 2)
+        {
+            Game.direction = ENEMY_RIGHT;
+        }
+        else
+        {
+            Game.direction = ENEMY_LEFT;
+        }
         break;
+    
     default:
         break;
     }
@@ -219,10 +223,10 @@ void updatePlayer()
     switch (player.action)
     {
     case ACTION_RIGHT:
-        player.sprite.x++;
+
         break;
     case ACTION_LEFT:
-        player.sprite.x--;
+
         break;
     case ACTION_FIRE:
         firePlayerBullet();
@@ -236,7 +240,7 @@ void firePlayerBullet()
 {
     Bullet *bullet;
     bullet = &Game.playerBullets[Game.currentBullet];
-    initPlayerBullet(bullet, player.sprite.x+4, player.sprite.y - 8,
+    initPlayerBullet(bullet, player.sprite.x + 6, player.sprite.y - 8,
                      2, 6, &bulletSptr_0_0);
 }
 
@@ -281,7 +285,8 @@ void moveEnemies()
     unsigned char i;
     for (i = 0; i < MAX_ENEMIES; i++)
     {
-        if (Game.enemies[i].visible == VISIBLE){
+        if (Game.enemies[i].visible == VISIBLE)
+        {
             moveEnemy(&Game.enemies[i]);
         }
     }
@@ -319,11 +324,11 @@ void drawEnemies()
 
 void drawPlayerBullet()
 {
-    if (player.action == ACTION_FIRE)
+    if (player.action == ACTION_FIRE && Game.playerBullets[Game.currentBullet].visible == NOT_VISIBLE)
     {
         draw_sprite(&Game.playerBullets[Game.currentBullet].sprite);
         Game.playerBullets[Game.currentBullet].visible = VISIBLE;
-        Game.currentBullet = Game.currentBullet++ % MAX_BULLETS;
+        // Game.currentBullet = Game.currentBullet++ % MAX_BULLETS;
     }
 }
 
@@ -332,10 +337,18 @@ void movePlayer()
     switch (player.action)
     {
     case ACTION_RIGHT:
-        move_sprite_right(&player.sprite);
+        if (player.sprite.x < 112)
+        {
+            move_sprite_right(&player.sprite);
+            move_sprite_right(&player.sprite);
+        }
         break;
     case ACTION_LEFT:
-        move_sprite_left(&player.sprite);
+        if (player.sprite.x > 0)
+        {
+            move_sprite_left(&player.sprite);
+            move_sprite_left(&player.sprite);
+        }
         break;
 
     default:
@@ -351,22 +364,22 @@ void movePlayerBullets()
         if (Game.playerBullets[i].visible == VISIBLE)
         {
             // Delete Sprite if reach end of screen
-            if (Game.playerBullets[i].sprite.y <= 8)
+            if (Game.playerBullets[i].sprite.y < 2)
             {
                 clean_sprite(&Game.playerBullets[i].sprite);
                 Game.playerBullets[i].visible = NOT_VISIBLE;
+            }else{
+                move_sprite_up(&Game.playerBullets[i].sprite);
+                move_sprite_up(&Game.playerBullets[i].sprite);
             }
+
             
-            move_sprite_up(&Game.playerBullets[i].sprite);
-            move_sprite_up(&Game.playerBullets[i].sprite);
-            move_sprite_up(&Game.playerBullets[i].sprite);
-            move_sprite_up(&Game.playerBullets[i].sprite);
-            move_sprite_up(&Game.playerBullets[i].sprite);
         }
     }
 }
 
-void checkCols() {
+void checkCols()
+{
     unsigned char i, j;
     for (i = 0; i < MAX_BULLETS; i++)
     {
@@ -376,7 +389,7 @@ void checkCols() {
             {
                 if (Game.enemies[j].visible == VISIBLE)
                 {
-                    if(check_collisions(&Game.playerBullets[i].sprite, &Game.enemies[j].sprite))
+                    if (check_collisions(&Game.playerBullets[i].sprite, &Game.enemies[j].sprite))
                     {
                         Game.playerBullets[i].visible = NOT_VISIBLE;
                         Game.enemies[j].visible = NOT_VISIBLE;
