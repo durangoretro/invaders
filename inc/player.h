@@ -19,5 +19,4 @@ void drawPlayer();
 void movePlayer();
 void updatePlayer();
 void firePlayerBullet();
-void updatePlayerBullets();
 #endif
