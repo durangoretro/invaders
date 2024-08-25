@@ -63,23 +63,10 @@ void update()
         // Input and Player move
         player.action = checkInput();
         updatePlayer();
-        updatePlayerBullets();
         checkCols();
     case 3: // Game Over
     default:
         break;
-    }
-}
-
-void updatePlayerBullets()
-{
-    unsigned char i;
-    for (i = 0; i < MAX_BULLETS; i++)
-    {
-        if (Game.playerBullets[i].visible == VISIBLE)
-        {
-            Game.playerBullets[i].sprite.y -= 4;
-        }
     }
 }
 
@@ -336,10 +323,10 @@ void movePlayerBullets()
         if (Game.playerBullets[i].visible == VISIBLE)
         {
             // Delete Sprite if reach end of screen
-            if (Game.playerBullets[i].sprite.y < 2)
+            if (Game.playerBullets[i].sprite.y == 255)
             {
-                clean_sprite(&Game.playerBullets[i].sprite);
                 Game.playerBullets[i].visible = NOT_VISIBLE;
+                clean_sprite(&Game.playerBullets[i].sprite);                
             }else{
                 move_sprite_up(&Game.playerBullets[i].sprite);
                 move_sprite_up(&Game.playerBullets[i].sprite);
