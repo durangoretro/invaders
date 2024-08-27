@@ -27,7 +27,7 @@ struct{
     State status;//TODO: Change to STart
     enemy enemies[MAX_ENEMIES];
     char direction;
-    Bullet playerBullets[MAX_BULLETS];
+    Bullet playerBullet;
     int currentBullet;
     Bullet enemiesBullets[MAX_BULLETS];
     int currentEnemyBullet;
