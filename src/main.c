@@ -373,6 +373,26 @@ void checkCols()
                 Game.enemies[j].visible = NOT_VISIBLE;
                 clean_sprite(&Game.playerBullet.sprite);
                 clean_sprite(&Game.enemies[j].sprite);
+                // red 1 i< 8
+                if(j<8)
+                {
+                    Game.score+=10;
+                }
+                // green i < 16
+                else if(j<16)
+                {
+                    Game.score+=30;
+                }                
+                // yellow i < 24
+                else if(j<24)
+                {
+                    Game.score+=40;
+                }
+                // Second Red i < 32
+                else
+                {
+                    Game.score+=10;
+                }
             }
             
         }
