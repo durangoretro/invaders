@@ -31,11 +31,13 @@ struct{
     int currentBullet;
     Bullet enemiesBullets[MAX_BULLETS];
     int currentEnemyBullet;
+    long score;
 }Game;
 
 void draw();
 void update();
 void init();
+void drawScore();
 
 //Player Bullet Functions
 void initPlayerBullet(Bullet* output, byte x, byte y, byte width, byte height, void * resource);
