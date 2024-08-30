@@ -4,6 +4,7 @@
 
 // Include Library
 #include <durango.h>
+#include <font.h>
 
 #include "game.h"
 
@@ -49,7 +50,7 @@ int main()
 void init()
 {
     Game.status = 0;
-
+    Game.score = 0;
     drawFullScreen(BLACK);
 }
 
@@ -83,6 +84,7 @@ void draw()
     case 1: // TODO: GAME_INIT
         drawEnemies();
         drawPlayer(&player);
+        drawScore();
         Game.status = 2; // To Game Loop
 
         break;
@@ -91,6 +93,7 @@ void draw()
         movePlayer();
         drawPlayerBullet();
         movePlayerBullets();
+        drawScore();
         break;
     case 3: // TODO: Game Over
     default:
@@ -101,6 +104,11 @@ void draw()
 void drawPlayer()
 {
     draw_sprite(&player.sprite);
+}
+
+void drawScore()
+{
+    printBCD(80, 1, font, WHITE, BLACK, Game.score);
 }
 
 void initEnemy(enemy *output, unsigned char x, unsigned char y, unsigned char width, unsigned char height, void *resource)
@@ -359,16 +367,34 @@ void checkCols()
     {
         for (j = 0; j < MAX_ENEMIES; j++)
         {
-            if (Game.enemies[j].visible == VISIBLE)
+            if (Game.enemies[j].visible == VISIBLE && check_collisions(&Game.playerBullet.sprite, &Game.enemies[j].sprite))
             {
-                if (check_collisions(&Game.playerBullet.sprite, &Game.enemies[j].sprite))
+                Game.playerBullet.visible = NOT_VISIBLE;
+                Game.enemies[j].visible = NOT_VISIBLE;
+                clean_sprite(&Game.playerBullet.sprite);
+                clean_sprite(&Game.enemies[j].sprite);
+                // red 1 i< 8
+                if(j<8)
                 {
-                    Game.playerBullet.visible = NOT_VISIBLE;
-                    Game.enemies[j].visible = NOT_VISIBLE;
-                    clean_sprite(&Game.playerBullet.sprite);
-                    clean_sprite(&Game.enemies[j].sprite);
+                    Game.score+=10;
+                }
+                // green i < 16
+                else if(j<16)
+                {
+                    Game.score+=30;
+                }                
+                // yellow i < 24
+                else if(j<24)
+                {
+                    Game.score+=40;
+                }
+                // Second Red i < 32
+                else
+                {
+                    Game.score+=10;
                 }
             }
+            
         }
     }
 
