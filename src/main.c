@@ -362,6 +362,7 @@ void movePlayerBullets()
 void checkCols()
 {
     unsigned char j;
+    long points;
 
     if (Game.playerBullet.visible == VISIBLE)
     {
@@ -376,22 +377,26 @@ void checkCols()
                 // red 1 i< 8
                 if(j<8)
                 {
-                    Game.score+=10;
+                    points=10;
+                    addBCD(&(Game.score), &points);
                 }
                 // green i < 16
                 else if(j<16)
                 {
-                    Game.score+=30;
+                    points=30;
+                    addBCD(&(Game.score), &points);
                 }                
                 // yellow i < 24
                 else if(j<24)
                 {
-                    Game.score+=40;
+                    points=40;
+                    addBCD(&(Game.score), &points);
                 }
                 // Second Red i < 32
                 else
                 {
-                    Game.score+=10;
+                    points=10;
+                    addBCD(&(Game.score), &points);
                 }
             }
             
