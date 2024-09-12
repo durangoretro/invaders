@@ -148,25 +148,25 @@ void startGame()
     // red 1
     for (i = 0; i < 8; i++)
     {
-        initEnemy(&Game.enemies[i], 5 + (i * 14), 30, 10, 8, &redSptr_0_0);
+        initEnemy(&Game.enemies[i], 5 + (i * 14), 40, 10, 8, &redSptr_0_0);
         Game.enemies[i].visible=VISIBLE;
     }
     // green
     for (i = 8; i < 16; i++)
     {
-        initEnemy(&Game.enemies[i], 5 + ((i - 8) * 14), 17, 10, 8, &greenSptr_0_0);
+        initEnemy(&Game.enemies[i], 5 + ((i - 8) * 14), 27, 10, 8, &greenSptr_0_0);
         Game.enemies[i].visible=VISIBLE;
     }
     // yellow
     for (i = 16; i < 24; i++)
     {
-        initEnemy(&Game.enemies[i], 5 + ((i - 16) * 14), 2, 10, 8, &yellowSptr_0_0);
+        initEnemy(&Game.enemies[i], 5 + ((i - 16) * 14), 12, 10, 8, &yellowSptr_0_0);
         Game.enemies[i].visible=VISIBLE;
     }
     // Second Red
     for (i = 24; i < 32; i++)
     {
-        initEnemy(&Game.enemies[i], 5 + ((i - 24) * 14), 42, 10, 8, &redSptr_0_0);
+        initEnemy(&Game.enemies[i], 5 + ((i - 24) * 14), 52, 10, 8, &redSptr_0_0);
         Game.enemies[i].visible=VISIBLE;
     }
     Game.direction = ENEMY_RIGHT;
