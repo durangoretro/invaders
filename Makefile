@@ -20,8 +20,16 @@ $(RES_DIR)/yellowSptr.h: $(RES_DIR)/yellow.png
 	java -jar ${RESCOMP} -n yellowSptr -m SPRITESHEET -w 10 -h 8 -i $(RES_DIR)/yellow.png -o $(RES_DIR)/yellowSptr.h  
 $(RES_DIR)/bulletSptr.h: $(RES_DIR)/bullet.png
 	java -jar ${RESCOMP} -n bulletSptr -m SPRITESHEET -w 2 -h 6 -i $(RES_DIR)/bullet.png -o $(RES_DIR)/bulletSptr.h  
-$(BUILD_DIR)/invaders.s: $(RES_DIR)/playerSptr.h $(RES_DIR)/bulletSptr.h $(RES_DIR)/redSptr.h $(RES_DIR)/greenSptr.h $(RES_DIR)/yellowSptr.h $(SOURCE_DIR)/main.c
+$(RES_DIR)/initial.h: $(RES_DIR)/INITIAL.PNG
+	java -jar $(RESCOMP) -n initial -m BACKGROUND -i $(RES_DIR)/INITIAL.PNG -o $(RES_DIR)/initial.h
+$(RES_DIR)/black.h: $(RES_DIR)/black.png
+	java -jar $(RESCOMP) -n black -m BACKGROUND -i $(RES_DIR)/black.png -o $(RES_DIR)/black.h
+$(RES_DIR)/gameover.h: $(RES_DIR)/gameover.png
+	java -jar $(RESCOMP) -n gameover -m BACKGROUND -i $(RES_DIR)/gameover.png -o $(RES_DIR)/gameover.h
+
+$(BUILD_DIR)/invaders.s: $(RES_DIR)/playerSptr.h $(RES_DIR)/gameover.h $(RES_DIR)/black.h $(RES_DIR)/initial.h $(RES_DIR)/bulletSptr.h $(RES_DIR)/redSptr.h $(RES_DIR)/greenSptr.h $(RES_DIR)/yellowSptr.h $(SOURCE_DIR)/main.c
 	cc65 $(COMPILER_OPT) -o $(BUILD_DIR)/invaders.s $(SOURCE_DIR)/main.c 
+
 $(BUILD_DIR)/invaders.o: $(BUILD_DIR)/invaders.s
 	ca65 $(ASM_OPT) $(BUILD_DIR)/invaders.s -o $(BUILD_DIR)/invaders.o
 invaders.bin: $(BUILD_DIR)/ $(BUILD_DIR)/invaders.o 

@@ -14,6 +14,9 @@
 #include "greenSptr.h"
 #include "yellowSptr.h"
 #include "bulletSptr.h"
+#include "initial.h"
+#include "black.h"
+#include "gameover.h"
 
 // Functions Prototype
 void startGame();
@@ -26,8 +29,6 @@ void moveEnemies();
 void firePlayerBullet();
 void drawPlayerBullet();
 void movePlayerBullets();
-
-
 
 // Collisions
 void checkCols();
@@ -49,7 +50,7 @@ int main()
 
 void init()
 {
-    Game.status = 0;
+    Game.status = 3;
     Game.score = 0;
     drawFullScreen(BLACK);
 }
@@ -57,9 +58,12 @@ void init()
 // Update Function
 void update()
 {
+    player.action = checkInput();
     switch (Game.status)
     {
     case 0: // TODO Start
+
+        break;
     case 1: // Game Init
         startGame();
         break;
@@ -67,7 +71,6 @@ void update()
         updateEnemies();
 
         // Input and Player move
-        player.action = checkInput();
         updatePlayer();
         checkCols();
     case 3: // Game Over
@@ -81,6 +84,17 @@ void draw()
     switch (Game.status)
     {
     case 0: // TODO Start
+        load_background(initial);
+        // Clear Screen and update buffer
+        clrscr();
+        if (player.action == ACTION_FIRE)
+        {
+            
+            load_background(black);
+            clrscr();
+            Game.status = 1;
+        }
+        break;
     case 1: // TODO: GAME_INIT
         drawEnemies();
         drawPlayer(&player);
@@ -96,6 +110,11 @@ void draw()
         drawScore();
         break;
     case 3: // TODO: Game Over
+        load_background(gameover);
+        clrscr();
+        if(player.action==ACTION_FIRE){
+            Game.status=0;
+        }
     default:
         break;
     }
@@ -149,25 +168,25 @@ void startGame()
     for (i = 0; i < 8; i++)
     {
         initEnemy(&Game.enemies[i], 5 + (i * 14), 40, 10, 8, &redSptr_0_0);
-        Game.enemies[i].visible=VISIBLE;
+        Game.enemies[i].visible = VISIBLE;
     }
     // green
     for (i = 8; i < 16; i++)
     {
         initEnemy(&Game.enemies[i], 5 + ((i - 8) * 14), 27, 10, 8, &greenSptr_0_0);
-        Game.enemies[i].visible=VISIBLE;
+        Game.enemies[i].visible = VISIBLE;
     }
     // yellow
     for (i = 16; i < 24; i++)
     {
         initEnemy(&Game.enemies[i], 5 + ((i - 16) * 14), 12, 10, 8, &yellowSptr_0_0);
-        Game.enemies[i].visible=VISIBLE;
+        Game.enemies[i].visible = VISIBLE;
     }
     // Second Red
     for (i = 24; i < 32; i++)
     {
         initEnemy(&Game.enemies[i], 5 + ((i - 24) * 14), 52, 10, 8, &redSptr_0_0);
-        Game.enemies[i].visible=VISIBLE;
+        Game.enemies[i].visible = VISIBLE;
     }
     Game.direction = ENEMY_RIGHT;
 }
@@ -337,7 +356,7 @@ void movePlayer()
 void movePlayerBullets()
 {
     unsigned char i;
-    
+
     if (Game.playerBullet.visible == VISIBLE)
     {
         i = 0;
@@ -375,31 +394,30 @@ void checkCols()
                 clean_sprite(&Game.playerBullet.sprite);
                 clean_sprite(&Game.enemies[j].sprite);
                 // red 1 i< 8
-                if(j<8)
+                if (j < 8)
                 {
-                    points=10;
+                    points = 10;
                     addBCD(&(Game.score), &points);
                 }
                 // green i < 16
-                else if(j<16)
+                else if (j < 16)
                 {
-                    points=30;
+                    points = 30;
                     addBCD(&(Game.score), &points);
-                }                
+                }
                 // yellow i < 24
-                else if(j<24)
+                else if (j < 24)
                 {
-                    points=40;
+                    points = 40;
                     addBCD(&(Game.score), &points);
                 }
                 // Second Red i < 32
                 else
                 {
-                    points=10;
+                    points = 10;
                     addBCD(&(Game.score), &points);
                 }
             }
-            
         }
     }
 
@@ -416,28 +434,33 @@ void checkEnemyCols()
             if (check_collisions(&Game.enemies[i].sprite, &player.sprite))
             {
                 player.lives--;
-                if(player.lives<0){
-                    Game.status=GAMEOVER;
-                }else{
-                // Restart Game
-                restartGame();
+                if (player.lives < 0)
+                {
+                    Game.status = GAMEOVER;
                 }
-                
+                else
+                {
+                    // Restart Game
+                    restartGame();
+                }
             }
         }
     }
 }
 
-void restartGame(){
-    //remove all sprites
+void restartGame()
+{
+    // remove all sprites
     unsigned char i;
-    for(i=0;i<MAX_ENEMIES;i++){
-        if(Game.enemies[i].visible==VISIBLE){
+    for (i = 0; i < MAX_ENEMIES; i++)
+    {
+        if (Game.enemies[i].visible == VISIBLE)
+        {
             clean_sprite(&Game.enemies[i].sprite);
         }
     }
-    //move sprites coords
-    // red 1
+    // move sprites coords
+    //  red 1
     for (i = 0; i < 8; i++)
     {
         initEnemy(&Game.enemies[i], 5 + (i * 14), 30, 10, 8, &redSptr_0_0);
@@ -457,11 +480,12 @@ void restartGame(){
     {
         initEnemy(&Game.enemies[i], 5 + ((i - 24) * 14), 42, 10, 8, &redSptr_0_0);
     }
-    //redraw sprites
-     for(i=0;i<MAX_ENEMIES;i++){
-        if(Game.enemies[i].visible==VISIBLE){
+    // redraw sprites
+    for (i = 0; i < MAX_ENEMIES; i++)
+    {
+        if (Game.enemies[i].visible == VISIBLE)
+        {
             draw_sprite(&Game.enemies[i].sprite);
         }
-        
     }
 }
