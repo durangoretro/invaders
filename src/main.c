@@ -318,14 +318,15 @@ void drawPlayerBullet()
 {
     if (player.action == ACTION_FIRE)
     {
-        if (Game.playerBullet.visible == VISIBLE)
+        if (Game.playerBullet.visible == NOT_VISIBLE)
         {
             clean_sprite(&Game.playerBullet.sprite);
+            firePlayerBullet();
+            draw_sprite(&Game.playerBullet.sprite);
+            Game.playerBullet.visible = VISIBLE;
         }
 
-        firePlayerBullet();
-        draw_sprite(&Game.playerBullet.sprite);
-        Game.playerBullet.visible = VISIBLE;
+        
     }
 }
 
@@ -463,22 +464,22 @@ void restartGame()
     //  red 1
     for (i = 0; i < 8; i++)
     {
-        initEnemy(&Game.enemies[i], 5 + (i * 14), 30, 10, 8, &redSptr_0_0);
+        initEnemy(&Game.enemies[i], 5 + (i * 14), 40, 10, 8, &redSptr_0_0);
     }
     // green
     for (i = 8; i < 16; i++)
     {
-        initEnemy(&Game.enemies[i], 5 + ((i - 8) * 14), 17, 10, 8, &greenSptr_0_0);
+        initEnemy(&Game.enemies[i], 5 + ((i - 8) * 14), 27, 10, 8, &greenSptr_0_0);
     }
     // yellow
     for (i = 16; i < 24; i++)
     {
-        initEnemy(&Game.enemies[i], 5 + ((i - 16) * 14), 2, 10, 8, &yellowSptr_0_0);
+        initEnemy(&Game.enemies[i], 5 + ((i - 16) * 14), 12, 10, 8, &yellowSptr_0_0);
     }
     // Second Red
     for (i = 24; i < 32; i++)
     {
-        initEnemy(&Game.enemies[i], 5 + ((i - 24) * 14), 42, 10, 8, &redSptr_0_0);
+        initEnemy(&Game.enemies[i], 5 + ((i - 24) * 14), 52, 10, 8, &redSptr_0_0);
     }
     // redraw sprites
     for (i = 0; i < MAX_ENEMIES; i++)

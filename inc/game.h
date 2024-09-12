@@ -18,10 +18,7 @@ typedef enum{
     GAMEOVER
 }State;
 
-typedef struct{
-    sprite sprite;
-    byte visible;
-}Bullet;
+
 
 struct{
     State status;//TODO: Change to STart

@@ -11,12 +11,18 @@
 #define ENEMY_LEFT 2
 #define ENEMY_DOWN 0
 
+typedef struct{
+    sprite sprite;
+    byte visible;
+}Bullet;
+
 // Enemy Functions and Data
 
 typedef struct {
     sprite sprite;
     int lives;
     unsigned char visible;
+    Bullet bullet;
 }enemy;
 
 
