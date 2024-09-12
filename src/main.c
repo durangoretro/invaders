@@ -50,7 +50,7 @@ int main()
 
 void init()
 {
-    Game.status = 3;
+    Game.status = 0;
     Game.score = 0;
     drawFullScreen(BLACK);
 }
@@ -89,7 +89,7 @@ void draw()
         clrscr();
         if (player.action == ACTION_FIRE)
         {
-            
+            //clear Screen for game mode
             load_background(black);
             clrscr();
             Game.status = 1;
