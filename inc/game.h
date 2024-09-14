@@ -37,6 +37,7 @@ void draw();
 void update();
 void init();
 void drawScore();
+void drawLives();
 
 //Player Bullet Functions
 void initPlayerBullet(Bullet* output, byte x, byte y, byte width, byte height, void * resource);

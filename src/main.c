@@ -73,7 +73,9 @@ void update()
         // Input and Player move
         updatePlayer();
         checkCols();
+        break;
     case 3: // Game Over
+        break;
     default:
         break;
     }
@@ -83,7 +85,7 @@ void draw()
 {
     switch (Game.status)
     {
-    case 0: // TODO Start
+    case 0: 
         load_background(initial);
         // Clear Screen and update buffer
         clrscr();
@@ -108,6 +110,7 @@ void draw()
         drawPlayerBullet();
         movePlayerBullets();
         drawScore();
+        drawLives();
         break;
     case 3: // TODO: Game Over
         load_background(gameover);
@@ -129,6 +132,24 @@ void drawPlayer()
 void drawScore()
 {
     printBCD(80, 1, font, WHITE, BLACK, Game.score);
+}
+void drawLives(){
+    unsigned char i;
+    printStr(2,1,font,WHITE,BLACK,"Lives: ");
+    //Due to the use of BCD with all the 0 we use this "solution"
+    switch (player.lives)
+    {
+    case 3:
+        printStr(40,1,font,WHITE,BLACK,"3");
+        break;
+    case 2:
+        printStr(40,1,font,WHITE,BLACK,"2");
+        break;
+    case 1:
+        printStr(40,1,font,WHITE,BLACK,"1");
+        break;
+    }
+    
 }
 
 void initEnemy(enemy *output, unsigned char x, unsigned char y, unsigned char width, unsigned char height, void *resource)
@@ -156,7 +177,7 @@ void startGame()
 {
     unsigned char i;
     // init Player
-    player.lives = 3;
+    player.lives = PLAYER_INITIAL_LIVES;
     player.sprite.resource = &playerSptr_0_0;
     player.sprite.width = 16;
     player.sprite.height = 8;
@@ -449,7 +470,7 @@ void checkEnemyCols()
             if (check_collisions(&Game.enemies[i].sprite, &player.sprite))
             {
                 player.lives--;
-                if (player.lives < 0)
+                if (player.lives <= 0)
                 {
                     Game.status = GAMEOVER;
                 }
