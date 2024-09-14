@@ -11,6 +11,8 @@
 #define MAX_ENEMIES 32
 #define MAX_BULLETS 20
 
+#define MAX_STEPS 8
+
 typedef enum{
     START=0,
     GAME_INIT,
@@ -25,8 +27,8 @@ struct{
     enemy enemies[MAX_ENEMIES];
     char direction;
     Bullet playerBullet;
+    char enemiesSteps;
     int currentBullet;
-    Bullet enemiesBullets[MAX_BULLETS];
     int currentEnemyBullet;
     long score;
 }Game;

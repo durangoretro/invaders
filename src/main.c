@@ -95,7 +95,7 @@ void draw()
             Game.status = 1;
         }
         break;
-    case 1: // TODO: GAME_INIT
+    case 1: 
         drawEnemies();
         drawPlayer(&player);
         drawScore();
@@ -115,6 +115,7 @@ void draw()
         if(player.action==ACTION_FIRE){
             Game.status=0;
         }
+        break;
     default:
         break;
     }
@@ -188,27 +189,40 @@ void startGame()
         initEnemy(&Game.enemies[i], 5 + ((i - 24) * 14), 52, 10, 8, &redSptr_0_0);
         Game.enemies[i].visible = VISIBLE;
     }
+    Game.enemiesSteps=0;
     Game.direction = ENEMY_RIGHT;
 }
 
 void updateEnemies()
 {
     // Enemy Direction
-    if (Game.direction == ENEMY_DOWN && Game.enemies[0].sprite.x > 20)
+    if (Game.direction == ENEMY_DOWN && Game.enemiesSteps >= MAX_STEPS)
     {
         Game.direction = ENEMY_LEFT;
     }
-    if (Game.direction == ENEMY_DOWN && Game.enemies[0].sprite.x <= 2)
+    if (Game.direction == ENEMY_DOWN && Game.enemiesSteps <= 0)
     {
         Game.direction = ENEMY_RIGHT;
     }
-    if (Game.direction == ENEMY_LEFT && Game.enemies[0].sprite.x <= 2)
+    if (Game.direction == ENEMY_LEFT && Game.enemiesSteps <= 0)
     {
         Game.direction = ENEMY_DOWN;
     }
-    if (Game.direction == ENEMY_RIGHT && Game.enemies[0].sprite.x > 20)
+    if (Game.direction == ENEMY_RIGHT && Game.enemiesSteps >= MAX_STEPS)
     {
         Game.direction = ENEMY_DOWN;
+    }
+
+    switch (Game.direction)
+    {
+    case ENEMY_RIGHT:
+        Game.enemiesSteps++;
+        break;
+    case ENEMY_LEFT:
+        Game.enemiesSteps--;
+        break;
+    default:
+        break;
     }
 }
 
@@ -489,4 +503,5 @@ void restartGame()
             draw_sprite(&Game.enemies[i].sprite);
         }
     }
+    Game.enemiesSteps=0;
 }
