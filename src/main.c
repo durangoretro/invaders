@@ -154,7 +154,7 @@ void drawLives(){
 
 void initEnemy(enemy *output, unsigned char x, unsigned char y, unsigned char width, unsigned char height, void *resource)
 {
-    output->lives = 1;
+    output->lives = 3;
     output->sprite.x = x;
     output->sprite.y = y;
     output->sprite.width = width;
