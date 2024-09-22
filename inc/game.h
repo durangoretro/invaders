@@ -31,6 +31,7 @@ struct{
     int currentBullet;
     int currentEnemyBullet;
     long score;
+    char level;
 }Game;
 
 void draw();

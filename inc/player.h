@@ -4,7 +4,7 @@
 #include <durango.h>
 // Player Functions and Data
 
-#define PLAYER_INITIAL_LIVES 1
+#define PLAYER_INITIAL_LIVES 3
 
 #define ACTION_RIGHT 1
 #define ACTION_LEFT 2
