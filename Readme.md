@@ -1,29 +1,17 @@
-# Durango C Example (Template)
+# Invaders From Space
 
-This is template of use for DurangoLib Initial Project with a C Example.
+This Game is a _Space invaders_ like game, for Durango. In this repository you can find all the source code, and resources for this game. 
 
-With this example you can generate a new ROM for the Durango Computer using the DurangoLib FrameWork.
+You need to save the world from the invaders from the inner space; using your ship and shooting all the enemies before they catch you or the earth.
 
-To generate a new Rom You will need one of:
+## Controls
 
-1. CC65 suite, and Durango Lib Installed in your System (You need Durango Lib 0.1.1 or later).
-2. [Durango Dev Kit Docker Image](https://hub.docker.com/r/zerasul/durangodevkit/tags) (You need Tag 1.0.1 or later).
+This game is compatible with Gamepad and KeyBoard
 
-After install Durango Lib or pull Docker Image you can generate a new ROM.
+Move left or Right to move the ship.
 
-1. using ```make```
+Press Fire (A on Gamepad or Space on keyboard) to fire. Only one Fire at the time is used.
 
-```bash
-make # use make make16 to generate a 16K ROM.
-```
+If your ship is catches by the invaders you loose one live. If you loose all your lives, the game is over.
 
-2. using Docker
-
-
-```bash
-docker run --rm -v $PWD:/src/durango zerasul/durangodevkit:latest
-```
-
-You can use [Perdita](https://github.com/zuiko21/minimOS/tree/master/emulation) Emulator to see your ROM running.
-
-**NOTE**: You can use Github CodeSpaces to generate a Durango ROM using Durango Docker image
+All this game is open source under the MIT license. You can check a copy of this license at this repository.
