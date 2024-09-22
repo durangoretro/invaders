@@ -2,7 +2,7 @@
 
 This Game is a _Space invaders_ like game, for Durango. In this repository you can find all the source code, and resources for this game. 
 
-![imagen](https://github.com/user-attachments/assets/71a775f3-77fc-4c27-b767-196aa3f6a3b0)
+![imagen](https://github.com/user-attachments/assets/0ae3759e-77d1-45c1-8fd8-b52289ab3ab4)
 
 
 You need to save the world from the invaders from the inner space; using your ship and shooting all the enemies before they catch you or the earth.
