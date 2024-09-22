@@ -418,7 +418,7 @@ void movePlayerBullets()
                 move_sprite_up(&Game.playerBullet.sprite);
             }
             i++;
-        } while (i < 6);
+        } while (i < BULLET_SPEED);
     }
 }
 

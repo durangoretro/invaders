@@ -13,6 +13,8 @@
 
 #define MAX_STEPS 8
 
+#define BULLET_SPEED 6
+
 typedef enum{
     START=0,
     GAME_INIT,
@@ -23,7 +25,7 @@ typedef enum{
 
 
 struct{
-    State status;//TODO: Change to STart
+    State status;
     enemy enemies[MAX_ENEMIES];
     char direction;
     Bullet playerBullet;
