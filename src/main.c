@@ -113,6 +113,7 @@ void draw()
         movePlayer();
         drawPlayerBullet();
         movePlayerBullets();
+        moveInvadersBullets();
         drawScore();
         drawLives();
         break;
@@ -461,6 +462,26 @@ void movePlayerBullets()
             }
             i++;
         } while (i < BULLET_SPEED);
+    }
+}
+
+void moveInvadersBullets()
+{
+    unsigned char i;
+    Bullet *bullet;
+    for(i=0; i<MAX_BULLETS; i++) {
+        bullet = &(Game.enemiesBullets[i]);
+        if(bullet->visible == VISIBLE) {
+            // Delete Sprite if reach end of screen
+            if (bullet->sprite.y > 120) {
+                Game.playerBullet.visible = NOT_VISIBLE;
+                clean_sprite(bullet);
+            }
+            else
+            {
+                move_sprite_down(bullet);
+            }
+        }
     }
 }
 
