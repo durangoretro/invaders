@@ -180,8 +180,8 @@ void initPlayerBullet(Bullet *output, byte x, byte y, byte width, byte height, v
 void initInvaderBullet(Bullet *output, enemy *invader)
 {
     output->visible = VISIBLE;
-    output->sprite.x = invader->sprite.x;
-    output->sprite.y = invader->sprite.y+4;
+    output->sprite.x = invader->sprite.x+2;
+    output->sprite.y = invader->sprite.y+10;
     output->sprite.width = 2;
     output->sprite.height = 6;
     output->sprite.resource = &bulletSptr_0_0;
@@ -279,7 +279,7 @@ void fire_invaders() {
         for(i=0; i<MAX_BULLETS; i++){
             if(Game.enemiesBullets[i].visible==NOT_VISIBLE) {
                 currentBullet = &(Game.enemiesBullets[i]);
-                for(j=32; j<MAX_ENEMIES; j=j+8) {
+                for(j=24+column; j>0; j-=8) {
                     if(Game.enemies[j].visible==1) {
                         currentInvader = &(Game.enemies[j]);
                         initInvaderBullet(currentBullet, currentInvader);
