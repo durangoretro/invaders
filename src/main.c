@@ -177,6 +177,17 @@ void initPlayerBullet(Bullet *output, byte x, byte y, byte width, byte height, v
     output->sprite.resource = resource;
 }
 
+void initInvaderBullet(Bullet *output, enemy *invader)
+{
+    output->visible = VISIBLE;
+    output->sprite.x = invader->sprite.x;
+    output->sprite.y = invader->sprite.y+4;
+    output->sprite.width = 2;
+    output->sprite.height = 6;
+    output->sprite.resource = &bulletSptr_0_0;
+    draw_sprite(output);
+}
+
 void startGame()
 {
     unsigned char i;
@@ -256,16 +267,26 @@ void updateEnemies()
 
 void fire_invaders() {
     unsigned char column;
-    unsigned char i;
+    unsigned char i,j;
+    Bullet *currentBullet;
+    enemy *currentInvader;
     // Fire invaders bullet
     if(random()>245) {
         consoleLogStr("FIRE\n");
         column = random() % 8;
         consoleLogHex(column);
         consoleLogStr("\n");
-        for(i=column; i<MAX_ENEMIES; i+=8) {
-            if(Game.enemies[i].visible==1) {
-                
+        for(i=0; i<MAX_BULLETS; i++){
+            if(Game.enemiesBullets[i].visible==NOT_VISIBLE) {
+                currentBullet = &(Game.enemiesBullets[i]);
+                for(j=32; j<MAX_ENEMIES; j=j+8) {
+                    if(Game.enemies[j].visible==1) {
+                        currentInvader = &(Game.enemies[j]);
+                        initInvaderBullet(currentBullet, currentInvader);
+                        break;
+                    }
+                }
+                break;
             }
         }
     }
