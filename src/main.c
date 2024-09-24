@@ -250,6 +250,25 @@ void updateEnemies()
     default:
         break;
     }
+    
+    fire_invaders();
+}
+
+void fire_invaders() {
+    unsigned char column;
+    unsigned char i;
+    // Fire invaders bullet
+    if(random()>245) {
+        consoleLogStr("FIRE\n");
+        column = random() % 8;
+        consoleLogHex(column);
+        consoleLogStr("\n");
+        for(i=column; i<MAX_ENEMIES; i+=8) {
+            if(Game.enemies[i].visible==1) {
+                
+            }
+        }
+    }
 }
 
 void updatePlayer()
