@@ -91,6 +91,8 @@ void draw()
         clrscr();
         if (player.action == ACTION_FIRE)
         {
+            // Init random seed
+            random_init((int)get_time());
             //clear Screen for game mode
             load_background(black);
             clrscr();
