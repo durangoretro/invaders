@@ -34,6 +34,8 @@ void movePlayerBullets();
 void checkCols();
 void checkEnemyCols();
 
+void checkEndLevel();
+
 int main()
 {
     init();
@@ -114,7 +116,7 @@ void draw()
         drawScore();
         drawLives();
         break;
-    case 3: // TODO: Game Over
+    case 3: 
         load_background(gameover);
         clrscr();
         if(player.action==ACTION_FIRE){
@@ -188,6 +190,7 @@ void startGame()
     // Init game Bullets
     Game.currentBullet = 0;
     Game.currentEnemyBullet = 0;
+    Game.level=1;
     // red 1
     for (i = 0; i < 8; i++)
     {
@@ -219,7 +222,7 @@ void startGame()
 void updateEnemies()
 {
     // Enemy Direction
-    if (Game.direction == ENEMY_DOWN && Game.enemiesSteps >= MAX_STEPS)
+    if (Game.direction == ENEMY_DOWN && Game.enemiesSteps >= MAX_STEPS/Game.level)
     {
         Game.direction = ENEMY_LEFT;
     }
@@ -231,7 +234,7 @@ void updateEnemies()
     {
         Game.direction = ENEMY_DOWN;
     }
-    if (Game.direction == ENEMY_RIGHT && Game.enemiesSteps >= MAX_STEPS)
+    if (Game.direction == ENEMY_RIGHT && Game.enemiesSteps >= MAX_STEPS/Game.level)
     {
         Game.direction = ENEMY_DOWN;
     }
@@ -311,12 +314,17 @@ unsigned char checkInput()
 
 void moveEnemies()
 {
-    unsigned char i;
+    unsigned char i,j;
     for (i = 0; i < MAX_ENEMIES; i++)
     {
         if (Game.enemies[i].visible == VISIBLE)
         {
-            moveEnemy(&Game.enemies[i]);
+            j=0;
+            do{
+                moveEnemy(&Game.enemies[i]);
+                j++;
+            }while(j<Game.level);
+            
         }
     }
 }
@@ -412,7 +420,7 @@ void movePlayerBullets()
                 move_sprite_up(&Game.playerBullet.sprite);
             }
             i++;
-        } while (i < 4);
+        } while (i < BULLET_SPEED);
     }
 }
 
@@ -460,6 +468,7 @@ void checkCols()
     }
 
     checkEnemyCols();
+    checkEndLevel();
 }
 
 void checkEnemyCols()
@@ -469,7 +478,7 @@ void checkEnemyCols()
     {
         if (Game.enemies[i].visible == VISIBLE)
         {
-            if (check_collisions(&Game.enemies[i].sprite, &player.sprite))
+            if (check_collisions(&Game.enemies[i].sprite, &player.sprite) || Game.enemies[i].sprite.y>120)
             {
                 player.lives--;
                 if (player.lives <= 0)
@@ -527,4 +536,23 @@ void restartGame()
         }
     }
     Game.enemiesSteps=0;
+}
+
+void checkEndLevel(){
+    unsigned char i;
+    unsigned char status=NOT_VISIBLE;
+    for(i=0;i<MAX_ENEMIES;i++){
+        if(Game.enemies[i].visible==VISIBLE){
+            status=VISIBLE;
+        }
+    }
+    //IF the status is not visible the level is complete; go to next level
+    if(status==NOT_VISIBLE){
+        Game.level++;
+        for(i=0;i<MAX_ENEMIES;i++){
+            Game.enemies[i].visible=VISIBLE;
+        }
+        restartGame();
+    }
+
 }
