@@ -41,6 +41,7 @@ void update();
 void init();
 void drawScore();
 void drawLives();
+void fire_invaders();
 
 //Player Bullet Functions
 void initPlayerBullet(Bullet* output, byte x, byte y, byte width, byte height, void * resource);
