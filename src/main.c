@@ -555,6 +555,10 @@ void restartGame()
         }
     }
     Game.enemiesSteps=0;
+    for(i=0; i<MAX_BULLETS; i++)
+    {
+        Game.enemiesBullets[i].visible=0;
+    }
 }
 
 void checkEndLevel(){

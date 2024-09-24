@@ -9,7 +9,7 @@
 // game functions
 
 #define MAX_ENEMIES 32
-#define MAX_BULLETS 20
+#define MAX_BULLETS 4
 
 #define MAX_STEPS 8
 
@@ -27,6 +27,7 @@ typedef enum{
 struct{
     State status;
     enemy enemies[MAX_ENEMIES];
+    Bullet enemiesBullets[MAX_BULLETS];
     char direction;
     Bullet playerBullet;
     char enemiesSteps;
