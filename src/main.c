@@ -185,7 +185,7 @@ void initInvaderBullet(Bullet *output, enemy *invader)
     output->sprite.y = invader->sprite.y+10;
     output->sprite.width = 2;
     output->sprite.height = 6;
-    output->sprite.resource = &bulletSptr_0_0;
+    output->sprite.resource = &bulletSptr_0_1;
     draw_sprite(output);
 }
 
