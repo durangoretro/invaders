@@ -93,6 +93,8 @@ void draw()
         clrscr();
         if (player.action == ACTION_FIRE)
         {
+            // Init random seed
+            random_init((int)get_time());
             //clear Screen for game mode
             load_background(black);
             clrscr();
@@ -111,6 +113,7 @@ void draw()
         movePlayer();
         drawPlayerBullet();
         movePlayerBullets();
+        moveInvadersBullets();
         drawScore();
         drawLives();
         break;
@@ -167,12 +170,23 @@ void initEnemy(enemy *output, unsigned char x, unsigned char y, unsigned char wi
 void initPlayerBullet(Bullet *output, byte x, byte y, byte width, byte height, void *resource)
 {
 
-    output->visible = NOT_VISIBLE;
+    output->visible = VISIBLE;
     output->sprite.x = x;
     output->sprite.y = y;
     output->sprite.width = width;
     output->sprite.height = height;
     output->sprite.resource = resource;
+}
+
+void initInvaderBullet(Bullet *output, enemy *invader)
+{
+    output->visible = VISIBLE;
+    output->sprite.x = invader->sprite.x+2;
+    output->sprite.y = invader->sprite.y+10;
+    output->sprite.width = 2;
+    output->sprite.height = 6;
+    output->sprite.resource = &bulletSptr_0_1;
+    draw_sprite(output);
 }
 
 void startGame()
@@ -247,6 +261,32 @@ void updateEnemies()
         break;
     default:
         break;
+    }
+    
+    fire_invaders();
+}
+
+void fire_invaders() {
+    unsigned char column;
+    unsigned char i,j;
+    Bullet *currentBullet;
+    enemy *currentInvader;
+    // Fire invaders bullet
+    if(random()>245) {
+        column = random() % 8;
+        for(i=0; i<MAX_BULLETS; i++){
+            if(Game.enemiesBullets[i].visible==NOT_VISIBLE) {
+                currentBullet = &(Game.enemiesBullets[i]);
+                for(j=24+column; j>0; j-=8) {
+                    if(Game.enemies[j].visible==1) {
+                        currentInvader = &(Game.enemies[j]);
+                        initInvaderBullet(currentBullet, currentInvader);
+                        break;
+                    }
+                }
+                break;
+            }
+        }
     }
 }
 
@@ -422,6 +462,26 @@ void movePlayerBullets()
     }
 }
 
+void moveInvadersBullets()
+{
+    unsigned char i;
+    Bullet *bullet;
+    for(i=0; i<MAX_BULLETS; i++) {
+        bullet = &(Game.enemiesBullets[i]);
+        if(bullet->visible == VISIBLE) {
+            // Delete Sprite if reach end of screen
+            if (bullet->sprite.y > 120) {
+                Game.playerBullet.visible = NOT_VISIBLE;
+                clean_sprite(bullet);
+            }
+            else
+            {
+                move_sprite_down(bullet);
+            }
+        }
+    }
+}
+
 void checkCols()
 {
     unsigned char j;
@@ -466,6 +526,8 @@ void checkCols()
     }
 
     checkEnemyCols();
+    checkBulletsCols();
+    checkInvaderBulletsCols();
     checkEndLevel();
 }
 
@@ -478,17 +540,52 @@ void checkEnemyCols()
         {
             if (check_collisions(&Game.enemies[i].sprite, &player.sprite) || Game.enemies[i].sprite.y>120)
             {
-                player.lives--;
-                if (player.lives <= 0)
-                {
-                    Game.status = GAMEOVER;
-                }
-                else
-                {
-                    // Restart Game
-                    restartGame();
-                }
+                kill();
             }
+        }
+    }
+}
+
+void kill()
+{
+    player.lives--;
+    if (player.lives <= 0)
+    {
+        Game.status = GAMEOVER;
+    }
+    else
+    {
+        // Restart Game
+        restartGame();
+    }
+}
+
+void checkBulletsCols()
+{
+    unsigned char i;
+    for (i = 0; i < MAX_BULLETS; i++)
+    {
+        if (Game.playerBullet.visible == VISIBLE && Game.enemiesBullets[i].visible == VISIBLE)
+        {
+            if (check_collisions(&Game.playerBullet.sprite, &Game.enemiesBullets[i].sprite))
+            {
+                Game.playerBullet.visible=NOT_VISIBLE;
+                Game.enemiesBullets[i].visible=NOT_VISIBLE;
+                clean_sprite(&Game.playerBullet.sprite);
+                clean_sprite(&Game.enemiesBullets[i].sprite);
+            }
+        }
+    }
+}
+
+void checkInvaderBulletsCols()
+{
+    unsigned char i;
+    for (i = 0; i < MAX_BULLETS; i++)
+    {
+        if (Game.enemiesBullets[i].visible == VISIBLE && check_collisions(&Game.enemiesBullets[i].sprite, &player.sprite))
+        {
+            kill();
         }
     }
 }
@@ -534,6 +631,10 @@ void restartGame()
         }
     }
     Game.enemiesSteps=0;
+    for(i=0; i<MAX_BULLETS; i++)
+    {
+        Game.enemiesBullets[i].visible=0;
+    }
 }
 
 void checkEndLevel(){
