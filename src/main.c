@@ -556,6 +556,24 @@ void checkEnemyCols()
     }
 }
 
+void checkBulletsCols()
+{
+    unsigned char i;
+    for (i = 0; i < MAX_BULLETS; i++)
+    {
+        if (Game.playerBullet.visible == VISIBLE && Game.enemiesBullets[i].visible == VISIBLE)
+        {
+            if (check_collisions(&Game.playerBullet.sprite, &Game.enemiesBullets[i].sprite))
+            {
+                Game.playerBullet.visible=NOT_VISIBLE;
+                Game.enemiesBullets[i].visible=NOT_VISIBLE;
+                clean_sprite(&Game.playerBullet.sprite);
+                clean_sprite(&Game.enemiesBullets[i].sprite);
+            }
+        }
+    }
+}
+
 void restartGame()
 {
     // remove all sprites
