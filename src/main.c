@@ -170,7 +170,7 @@ void initEnemy(enemy *output, unsigned char x, unsigned char y, unsigned char wi
 void initPlayerBullet(Bullet *output, byte x, byte y, byte width, byte height, void *resource)
 {
 
-    output->visible = NOT_VISIBLE;
+    output->visible = VISIBLE;
     output->sprite.x = x;
     output->sprite.y = y;
     output->sprite.width = width;
@@ -273,10 +273,7 @@ void fire_invaders() {
     enemy *currentInvader;
     // Fire invaders bullet
     if(random()>245) {
-        consoleLogStr("FIRE\n");
         column = random() % 8;
-        consoleLogHex(column);
-        consoleLogStr("\n");
         for(i=0; i<MAX_BULLETS; i++){
             if(Game.enemiesBullets[i].visible==NOT_VISIBLE) {
                 currentBullet = &(Game.enemiesBullets[i]);
@@ -529,6 +526,8 @@ void checkCols()
     }
 
     checkEnemyCols();
+    checkBulletsCols();
+    checkInvaderBulletsCols();
     checkEndLevel();
 }
 
@@ -541,18 +540,23 @@ void checkEnemyCols()
         {
             if (check_collisions(&Game.enemies[i].sprite, &player.sprite) || Game.enemies[i].sprite.y>120)
             {
-                player.lives--;
-                if (player.lives <= 0)
-                {
-                    Game.status = GAMEOVER;
-                }
-                else
-                {
-                    // Restart Game
-                    restartGame();
-                }
+                kill();
             }
         }
+    }
+}
+
+void kill()
+{
+    player.lives--;
+    if (player.lives <= 0)
+    {
+        Game.status = GAMEOVER;
+    }
+    else
+    {
+        // Restart Game
+        restartGame();
     }
 }
 
@@ -570,6 +574,18 @@ void checkBulletsCols()
                 clean_sprite(&Game.playerBullet.sprite);
                 clean_sprite(&Game.enemiesBullets[i].sprite);
             }
+        }
+    }
+}
+
+void checkInvaderBulletsCols()
+{
+    unsigned char i;
+    for (i = 0; i < MAX_BULLETS; i++)
+    {
+        if (Game.enemiesBullets[i].visible == VISIBLE && check_collisions(&Game.enemiesBullets[i].sprite, &player.sprite))
+        {
+            kill();
         }
     }
 }

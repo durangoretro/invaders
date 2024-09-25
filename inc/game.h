@@ -45,6 +45,9 @@ void drawLives();
 void fire_invaders();
 void initInvaderBullet(Bullet *output, enemy *invader);
 void moveInvadersBullets();
+void checkBulletsCols();
+void checkInvaderBulletsCols();
+void kill();
 
 //Player Bullet Functions
 void initPlayerBullet(Bullet* output, byte x, byte y, byte width, byte height, void * resource);
